@@ -9,6 +9,6 @@ description:
 paginate: 10
 paginate_path: /page/:num/
 permalink: /:title/
-baseurl: /
+#baseurl: 
 
 theme: jekyll-theme-cayman
