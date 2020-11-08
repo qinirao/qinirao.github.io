@@ -1,10 +1,8 @@
 plugins:
   - jekyll-paginate
 
-title: Sweet 16
-description:
-    <a href="https://wordpress.org/themes/twentysixteen/" rel="external">Wordpress 2016 theme</a>
-    in <a href="https://jekyllrb.com/" rel="external">Jekyll</a>
+title: 做个独立自考的人
+description: 常将有日思无日，莫待无视思有时
 
 paginate: 10
 paginate_path: /page/:num/
