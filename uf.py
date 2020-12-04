@@ -1,3 +1,10 @@
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import multiprocessing
+
 def dist(df):
     res = pd.DataFrame(index=np.arange(df.shape[1]), columns = np.arange(df.shape[1]))
     for i in range(df.shape[1]):
@@ -8,6 +15,50 @@ def dist(df):
             res.iloc[i,j] = d
             res.iloc[j,i] = d
     return res
+
+def cal(x):
+    i = x[0]
+    j = x[1]
+    df = x[2]
+    d,p = fastdtw(df[i].dropna().values, df[j].dropna().values, dist = euclidean)
+#    res.iloc[i,j] = d
+#    res.iloc[j,i] = d
+    return [i, j , d]
+
+class mdist(object):
+    df = None
+    res = None
+    pool = None
+    xs = []
+
+    def __init__(self,df):
+        self.df = df
+        self.res = pd.DataFrame(index=np.arange(df.shape[1]), columns = np.arange(df.shape[1]))
+        for i in range(df.shape[1]):
+            self.res.iloc[i,i] = 0
+            for j in range(i + 1, df.shape[1]):
+                self.xs.append([i,j, self.df])
+
+    def work(self):
+        df = self.df
+        res = self.res
+        cores = multiprocessing.cpu_count()
+        self.pool = multiprocessing.Pool(processes=cores)
+        try:
+            ret = self.pool.map(cal, self.xs)
+            for x in ret:
+                i = x[0]
+                j = x[1]
+                res.iloc[i,j] = x[2]
+                res.iloc[j,i] = x[2]
+        except Exception as e:
+            print(e)
+        self.pool.terminate()
+        self.pool.join()
+        return res
+
+
+
 
 class qu(object):
     id=[]
